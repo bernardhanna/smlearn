@@ -78,8 +78,25 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
     const handleAnswerSubmit = (e) => {
         e.preventDefault();
         const normalizedUserAnswer = normalizeString(userAnswer);
-        const normalizedCorrectAnswer = normalizeString(currentQuestion.answer);
-        if (normalizedUserAnswer === normalizedCorrectAnswer) {
+        let normalizedCorrectAnswers = normalizeString(currentQuestion.answer);
+        let isCorrect = false;
+
+        try {
+            // Attempt to parse the answer in case it's a JSON-encoded array
+            const potentialAnswers = JSON.parse(normalizedCorrectAnswers);
+            if (Array.isArray(potentialAnswers)) {
+                // If the answer is an array, check if the user's answer matches any of the correct answers
+                isCorrect = potentialAnswers.some(answer => normalizeString(answer) === normalizedUserAnswer);
+            } else {
+                // If parsing doesn't result in an array, treat it as a regular string comparison
+                isCorrect = normalizedUserAnswer === normalizedCorrectAnswers;
+            }
+        } catch (error) {
+            // Fallback to treating the answer as a normal string if JSON parsing fails
+            isCorrect = normalizedUserAnswer === normalizedCorrectAnswers;
+        }
+
+        if (isCorrect) {
             setCorrectAnswersCount(prevCount => prevCount + 1);
             moveToNextQuestion();
         } else {
@@ -90,6 +107,7 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
     const moveToNextQuestion = () => {
         setError('');
         setUserAnswer('');
+        setShowAnswer(false); // Reset showAnswer when moving to the next question
         if (currentQuestionIndex + 1 < questions.length) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else {
@@ -98,6 +116,7 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
     };
 
     const handleSkipQuestion = () => {
+        setShowAnswer(false); // Reset showAnswer when skipping the question
         moveToNextQuestion();
     };
 
@@ -118,6 +137,7 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
     const handlePreviousQuestion = () => {
         setError('');
         setUserAnswer('');
+        setShowAnswer(false); // Reset showAnswer when moving to the previous question
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
         }
@@ -210,12 +230,30 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
                     {renderQuestionInput(questions[currentQuestionIndex].type, questions[currentQuestionIndex])}
                 </div>
                 {error && <p className="text-xs italic text-red-500">{error}</p>}
-                {showAnswer && <p className="text-green-500">Answer: {questions[currentQuestionIndex].answer}</p>}
+
+                {showAnswer && (
+                    <p className="text-green-500">
+                        Answer: {
+                            (() => {
+                                try {
+                                    // Attempt to parse the answer to check if it's a JSON-encoded array
+                                    const answersArray = JSON.parse(currentQuestion.answer);
+                                    if (Array.isArray(answersArray)) {
+                                        // If it's an array, join the answers with ' OR '
+                                        return answersArray.join(" OR ");
+                                    }
+                                } catch (error) {
+                                    // If parsing fails, it means it's a single answer, not JSON-encoded
+                                }
+                                // Fallback for single answers or if parsing fails
+                                return currentQuestion.answer;
+                            })()
+                        }
+                    </p>
+                )}
+
                 <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
                     Submit Answer
-                </button>
-                <button type="button" onClick={handleSkipQuestion} className="px-4 py-2 ml-4 font-bold text-white bg-gray-500 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline">
-                    Skip Question
                 </button>
                 <button type="button" onClick={handleShowAnswer} className="px-4 py-2 ml-4 font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline">
                     Show Answer
@@ -225,6 +263,9 @@ const Quiz = ({ questions: initialQuestions, user, course }) => {
                 </button>
                 <button type="button" onClick={handlePreviousQuestion} className="px-4 py-2 ml-4 font-bold text-white bg-yellow-500 rounded hover:bg-yellow-700 focus:outline-none focus:shadow-outline">
                     Previous Question
+                </button>
+                <button type="button" onClick={handleSkipQuestion} className="px-4 py-2 ml-4 font-bold text-white bg-gray-500 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline">
+                    Skip Question
                 </button>
                 <button type="button" onClick={() => handleIKnowThis(questions[currentQuestionIndex].id, course.slug)} className="px-4 py-2 ml-4 font-bold text-white bg-orange-500 rounded hover:bg-orange-700 focus:outline-none focus:shadow-outline">
                     I Know This

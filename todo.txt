@@ -14,3 +14,16 @@ php artisan db:seed --class=ReactSeeder
 
 valet start
 npm run dev
+
+
+
+===================
+Fix Show Answer always showing
+Fix issues with voice recogntion
+
+Add Accordion with text explanation, videos etc
+Add ratings
+Add the SM 2 algorithm
+Add Stats for the user in Dashboard
+Work on UI
+===================
