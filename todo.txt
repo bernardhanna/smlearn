@@ -1,8 +1,7 @@
 php artisan migrate:refresh
 php artisan db:seed
-
-php artisan db:seed --class=DataMiningSeeder
 php artisan db:seed --class=DataVisualizationSeeder
+php artisan db:seed --class=DataMiningSeeder
 php artisan db:seed --class=JavaScriptSeeder
 php artisan db:seed --class=JavaSeeder
 php artisan db:seed --class=MachineLearningSeeder
@@ -27,3 +26,8 @@ Add the SM 2 algorithm
 Add Stats for the user in Dashboard
 Work on UI
 ===================
+
+
+valet start
+valet link
+npm run dev

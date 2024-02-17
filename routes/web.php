@@ -58,4 +58,6 @@ Route::get('/stuff-i-know', [StuffIKnowController::class, 'index'])->name('stuff
 Route::delete('/unmark-question-known/{questionId}', [KnownController::class, 'unmarkQuestionKnown'])->name('unmark-question-known')->middleware(['auth', 'verified']);
 
 
+Route::post('/submit-answer', [QuizController::class, 'submitAnswer'])->middleware(['auth', 'verified'])->name('submit-answer');
+
 require __DIR__.'/auth.php';

@@ -65,7 +65,40 @@ class TestDataSeeder extends Seeder
                 'type' => 'true-false',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
+            [
+                'topic_id' => $topicId,
+                'question' => 'What is the capital of france?',
+                'answer' => 'Paris',
+                'difficulty' => 'Easy',
+                'type' => 'speech', // Set the type to 'speech'
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'course_id' => $courseId,
+            ],
+            [
+                'topic_id' => $topicId,
+                'question' => 'Identify the chart type in the image.',
+                'answer' => 'Bar chart',
+                'image_url' => '/images/your_image.jpg', // Adjust path as necessary
+                'difficulty' => 'Medium',
+                'type' => 'text',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'course_id' => $courseId,
+            ],
+            [
+                'topic_id' => $topicId,
+                'question' => 'Watch the following video on the basics of data visualization and answer: What is one key takeaway?',
+                'video_id' => 'loYuxWSsLNc', // Use YouTube video ID
+                'answer' => 'Visualizations can reveal trends and patterns in data',
+                'difficulty' => 'Medium',
+                'type' => 'text',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'course_id' => $courseId,
+            ],
+            // Add more questions as needed
         ]);
     }
 }

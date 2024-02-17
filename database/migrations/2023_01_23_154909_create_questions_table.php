@@ -12,6 +12,8 @@ return new class extends Migration
             $table->unsignedBigInteger('topic_id');
             $table->string('question');
             $table->text('answer');
+            $table->string('image_url')->nullable();
+            $table->string('video_id')->nullable();
             $table->string('difficulty')->nullable();
             $table->string('type')->nullable();
             $table->json('options')->nullable();
